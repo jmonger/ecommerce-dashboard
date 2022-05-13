@@ -1,151 +1,94 @@
-import React, { useEffect, useState, useRef } from 'react'
-import styled from 'styled-components'
-import { useTable } from 'react-table'
-import InquiryDataService from '../services/inquiries.service'
-
+import React, { useEffect, useState, useRef } from "react";
+import styled from "styled-components";
+import { useTable } from "react-table";
+import InquiryDataService from "../services/inquiries.service";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const sample_inquiries = [
-    {
-        "name": "Marcel Might",
-        "email": "m.might@gmail.com",
-        "phone": "555555555",
-        "message": "Need help with a trip"
-    },
-    {
-        "name": "Jack Smith",
-        "email": "j.smith@gmail.com",
-        "phone": "555555543",
-        "message": "Need help with a destination"
-    },
-    {
-        "name": "Jerod Knee",
-        "email": "j.knee@gmail.com",
-        "phone": "555555554",
-        "message": "Planning a family vacation"
-    },
-]
+  {
+    name: "Marcel Might",
+    email: "m.might@gmail.com",
+    phone: "555555555",
+    message: "Need help with a trip",
+  },
+  {
+    name: "Jack Smith",
+    email: "j.smith@gmail.com",
+    phone: "555555543",
+    message: "Need help with a destination",
+  },
+  {
+    name: "Jerod Knee",
+    email: "j.knee@gmail.com",
+    phone: "555555554",
+    message: "Planning a family vacation",
+  },
+];
 
-const Styles = styled.div `
-    padding: 1rem;
-
-    table {
-        border-spacking: 0;
-        border: 1px solid black;
-
-        tr {
-            :last-child {
-                td {
-                     border-bottom: 0;
-                }
-            }
-        }
-
-        th,
-        td {
-            margin: 0;
-            padding: 0.5rem;
-            border-bottom: 1px solid black;
-            border-right: 1px solid black;
-
-            :last-child {
-                border-right: 0;
-            }
-        }
-    }
-`
-
-function Table ( { columns, data }) {
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({
-        columns,
-        data,
-    })
-    return (
-        <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    )
-}
 const Inquiries = () => {
-    const [inquiries, setInquiries] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [checked, setChecked] = useState([1]);
 
-    useEffect(() => {
-        retrieveInquiries();
-    }, []);
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
 
-    const retrieveInquiries = () => {
-        InquiryDataService.getAll()
-            .then((response) => {
-                setInquiries(response.data);
-                console.log(response.data);
-            })
-            .catch((e) => {
-                console.log(e);
-            })
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
     }
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: 'Inquiries',
-                columns: [
-                    {
-                        Header: 'Name',
-                        accessor: 'name'
-                    },
-                    {
-                        Header: 'Email',
-                        accessor: 'email'
-                    },
-                    {
-                        Header: 'Phone',
-                        accessor: 'phone'
-                    },
-                    {
-                        Header: 'Message',
-                        accessor: 'message'
-                    },
-                ]
-            }
 
-         
-        ],
-        []
-    )
+    setChecked(newChecked);
+  };
 
-    return (
-        <div>
-            <Styles>
-                <Table columns={columns} data={inquiries} />
-            </Styles>
-        </div>
+  useEffect(() => {
+    retrieveInquiries();
+  }, []);
 
+  const retrieveInquiries = () => {
+    InquiryDataService.getAll()
+      .then((response) => {
+        setInquiries(response.data);
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
-    )
-}
+  return (
+    <div>
+      <h1>Inquiries</h1>
+      <List>
+        {inquiries.map((inquiry, index) => (
+          <ListItemButton key={index}>
+            <ListItemText
+              primary={<h3>{inquiry.name}</h3>}
+              secondary={
+                <div>
+                  <Typography>
+                    <i className="bx bx-phone"></i> {inquiry.phone}
+                    <br />
+                    <i className="bx bx-paper-plane"></i> {inquiry.email}
+                    <br />
+                    <i className="bx bx-message-detail"></i> {inquiry.message}
+                  </Typography>
+                  <FormControlLabel control={<Switch />} label="Contacted?" />
 
-export default Inquiries
+                </div>
+              }
+            />
+          </ListItemButton>
+        ))}
+      </List>
+    </div>
+  );
+};
+
+export default Inquiries;

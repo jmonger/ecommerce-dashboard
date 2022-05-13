@@ -12,22 +12,22 @@ const sidebarNav = [
         text: 'Inquiries'
     },
     {
-        link: '/products',
-        section: 'products',
-        icon: <i className='bx bx-cube'></i>,
-        text: 'Products'
+        link: '/trips',
+        section: 'trips',
+        icon: <i className='bx bx-trip'></i>,
+        text: 'Trips'
     },
     {
-        link: '/customers',
-        section: 'customers',
+        link: '/travlers',
+        section: 'travelers',
         icon: <i className='bx bx-user'></i>,
-        text: 'Customers'
+        text: 'Travelers'
     },
     {
-        link: '/stats',
-        section: 'stats',
-        icon: <i className='bx bx-line-chart'></i>,
-        text: 'Stats'
+        link: '/blog',
+        section: 'blog',
+        icon: <i className='bx bx-pencil'></i>,
+        text: 'Blog'
     },
     {
         link: '/settings',
